@@ -1,251 +1,552 @@
-===========================
-// SCREEN CHANGE
-// ================================
+/* =========================================================
+   JAISAL VIEW — PREMIUM JAVASCRIPT
+   ========================================================= */
 
-const screens = document.querySelectorAll(".screen");
+document.addEventListener("DOMContentLoaded", () => {
 
-function showScreen(id) {
+    /* ================= PRELOADER ================= */
 
-    screens.forEach(screen => {
-        screen.classList.remove("active");
-    });
+    const preloader = document.getElementById("preloader");
 
-    document
-        .getElementById(id)
-        .classList.add("active");
-}
-
-
-// ================================
-// OPEN BUTTON
-// ================================
-
-document
-    .getElementById("openBtn")
-    .addEventListener("click", function () {
-
-        showScreen("gallery");
-
-        createBurst();
-
+    window.addEventListener("load", () => {
+        setTimeout(() => {
+            if (preloader) {
+                preloader.classList.add("hide");
+            }
+        }, 800);
     });
 
 
-// ================================
-// NEXT BUTTON
-// ================================
+    /* ================= MOBILE MENU ================= */
 
-document
-    .getElementById("nextBtn")
-    .addEventListener("click", function () {
+    const menuBtn = document.getElementById("menuBtn");
+    const navMenu = document.getElementById("navMenu");
 
-        showScreen("final");
+    if (menuBtn && navMenu) {
 
-        createBurst();
+        menuBtn.addEventListener("click", () => {
 
-    });
+            navMenu.classList.toggle("active");
 
+            const icon = menuBtn.querySelector("i");
 
-// ================================
-// HEART / SPARKLE EFFECT
-// ================================
+            if (navMenu.classList.contains("active")) {
+                icon.classList.remove("fa-bars");
+                icon.classList.add("fa-xmark");
+            } else {
+                icon.classList.remove("fa-xmark");
+                icon.classList.add("fa-bars");
+            }
 
-function createBurst() {
-
-    for (let i = 0; i < 30; i++) {
-
-        const heart =
-            document.createElement("span");
-
-        heart.innerHTML =
-            Math.random() > 0.25
-            ? "♥"
-            : "✦";
+        });
 
 
-        heart.style.position = "fixed";
+        navMenu.querySelectorAll("a").forEach(link => {
 
-        heart.style.left = "50%";
+            link.addEventListener("click", () => {
 
-        heart.style.top = "50%";
+                navMenu.classList.remove("active");
 
-        heart.style.zIndex = "100";
+                const icon = menuBtn.querySelector("i");
 
-        heart.style.pointerEvents = "none";
+                icon.classList.remove("fa-xmark");
+                icon.classList.add("fa-bars");
 
-        heart.style.color = "#ff70b9";
-
-        heart.style.fontSize =
-            (14 + Math.random() * 24) + "px";
-
-
-        heart.style.transition =
-            "transform 1.4s ease, opacity 1.4s ease";
-
-
-        document.body.appendChild(heart);
-
-
-        setTimeout(function () {
-
-            const x =
-                (Math.random() - 0.5) * 450;
-
-            const y =
-                (Math.random() - 0.5) * 650;
-
-            const rotate =
-                Math.random() * 360;
-
-
-            heart.style.transform =
-                `translate(${x}px, ${y}px)
-                 rotate(${rotate}deg)`;
-
-
-            heart.style.opacity = "0";
-
-        }, 20);
-
-
-        setTimeout(function () {
-
-            heart.remove();
-
-        }, 1500);
-
-    }
-
-}
-
-
-// ================================
-// BACKGROUND STARS
-// ================================
-
-const canvas =
-    document.getElementById("stars");
-
-const ctx =
-    canvas.getContext("2d");
-
-
-let stars = [];
-
-
-function resizeCanvas() {
-
-    const dpr =
-        window.devicePixelRatio || 1;
-
-
-    canvas.width =
-        window.innerWidth * dpr;
-
-    canvas.height =
-        window.innerHeight * dpr;
-
-
-    stars = [];
-
-
-    for (let i = 0; i < 120; i++) {
-
-        stars.push({
-
-            x:
-                Math.random() *
-                canvas.width,
-
-            y:
-                Math.random() *
-                canvas.height,
-
-            radius:
-                Math.random() * 1.8 + 0.4,
-
-            alpha:
-                Math.random(),
-
-            speed:
-                Math.random() * 0.01 + 0.002
+            });
 
         });
 
     }
 
-}
 
+    /* ================= NAVBAR EFFECT ================= */
 
-// ================================
-// DRAW STARS
-// ================================
+    const navbar = document.querySelector(".navbar");
 
-function animateStars() {
+    function updateNavbar() {
 
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+        if (!navbar) return;
 
+        if (window.scrollY > 70) {
 
-    stars.forEach(function (star) {
+            navbar.style.position = "fixed";
+            navbar.style.background = "rgba(7, 6, 5, .94)";
+            navbar.style.backdropFilter = "blur(16px)";
+            navbar.style.borderBottom =
+                "1px solid rgba(215, 173, 90, .18)";
 
-        star.alpha += star.speed;
+        } else {
 
-
-        if (
-            star.alpha > 1 ||
-            star.alpha < 0.08
-        ) {
-
-            star.speed *= -1;
+            navbar.style.position = "absolute";
+            navbar.style.background = "transparent";
+            navbar.style.backdropFilter = "none";
+            navbar.style.borderBottom =
+                "1px solid rgba(255,255,255,.1)";
 
         }
 
+    }
 
-        ctx.globalAlpha =
-            star.alpha;
+    window.addEventListener("scroll", updateNavbar);
 
-
-        ctx.fillStyle = "white";
-
-
-        ctx.beginPath();
+    updateNavbar();
 
 
-        ctx.arc(
-            star.x,
-            star.y,
-            star.radius,
-            0,
-            Math.PI * 2
+    /* ================= HERO PARALLAX ================= */
+
+    const heroBg = document.querySelector(".hero-bg");
+
+    function heroParallax() {
+
+        if (!heroBg) return;
+
+        const scroll = window.scrollY;
+
+        if (scroll <= window.innerHeight) {
+
+            heroBg.style.transform =
+                `scale(1.08) translateY(${scroll * 0.10}px)`;
+
+        }
+
+    }
+
+    window.addEventListener("scroll", heroParallax);
+
+
+    /* ================= SCROLL REVEAL ================= */
+
+    const revealElements = document.querySelectorAll(
+        ".experience-card, " +
+        ".day-card, " +
+        ".review-card, " +
+        ".contact-item, " +
+        ".gallery-item, " +
+        ".heritage-content, " +
+        ".camp-content, " +
+        ".intro-text"
+    );
+
+    if ("IntersectionObserver" in window) {
+
+        const observer = new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (entry.isIntersecting) {
+
+                        entry.target.classList.add(
+                            "reveal-visible"
+                        );
+
+                        observer.unobserve(entry.target);
+
+                    }
+
+                });
+
+            },
+            {
+                threshold: 0.12
+            }
         );
 
 
-        ctx.fill();
+        revealElements.forEach((element, index) => {
+
+            element.classList.add("reveal-hidden");
+
+            element.style.transitionDelay =
+                `${Math.min(index * 0.05, 0.3)}s`;
+
+            observer.observe(element);
+
+        });
+
+    } else {
+
+        revealElements.forEach(element => {
+            element.classList.add("reveal-visible");
+        });
+
+    }
+
+
+    /* ================= 3D EXPERIENCE CARDS ================= */
+
+    const cards =
+        document.querySelectorAll(".experience-card");
+
+
+    cards.forEach(card => {
+
+        card.addEventListener("mousemove", event => {
+
+            // Disable on touch devices
+            if (window.innerWidth <= 700) return;
+
+            const rect =
+                card.getBoundingClientRect();
+
+            const x =
+                event.clientX - rect.left;
+
+            const y =
+                event.clientY - rect.top;
+
+            const centerX =
+                rect.width / 2;
+
+            const centerY =
+                rect.height / 2;
+
+            const rotateX =
+                ((y - centerY) / centerY) * -5;
+
+            const rotateY =
+                ((x - centerX) / centerX) * 5;
+
+            card.style.transform =
+                `perspective(900px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)
+                 translateY(-10px)`;
+
+        });
+
+
+        card.addEventListener("mouseleave", () => {
+
+            card.style.transform =
+                "perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)";
+
+        });
 
     });
 
 
-    requestAnimationFrame(
-        animateStars
+    /* ================= INTRO IMAGE 3D ================= */
+
+    const imageCard =
+        document.querySelector(".image-card");
+
+
+    if (imageCard) {
+
+        imageCard.addEventListener("mousemove", event => {
+
+            if (window.innerWidth <= 700) return;
+
+            const rect =
+                imageCard.getBoundingClientRect();
+
+            const x =
+                event.clientX - rect.left;
+
+            const y =
+                event.clientY - rect.top;
+
+            const rotateY =
+                ((x / rect.width) - .5) * 9;
+
+            const rotateX =
+                ((y / rect.height) - .5) * -9;
+
+            imageCard.style.transform =
+                `perspective(1000px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)
+                 scale(1.02)`;
+
+        });
+
+
+        imageCard.addEventListener("mouseleave", () => {
+
+            imageCard.style.transform =
+                "perspective(1000px) rotateY(-7deg) rotateX(3deg)";
+
+        });
+
+    }
+
+
+    /* ================= FLOATING CARD ================= */
+
+    const floatingCard =
+        document.querySelector(".floating-card");
+
+
+    if (floatingCard) {
+
+        document.addEventListener("mousemove", event => {
+
+            if (window.innerWidth <= 700) return;
+
+            const x =
+                (event.clientX / window.innerWidth - .5) * 10;
+
+            const y =
+                (event.clientY / window.innerHeight - .5) * 10;
+
+            floatingCard.style.transform =
+                `translate(${x}px, ${y}px) rotate(-8deg)`;
+
+        });
+
+    }
+
+
+    /* ================= GALLERY LIGHTBOX ================= */
+
+    const galleryItems =
+        document.querySelectorAll(".gallery-item");
+
+
+    const lightbox =
+        document.createElement("div");
+
+    lightbox.className = "lightbox";
+
+    lightbox.innerHTML = `
+        <button class="lightbox-close"
+                aria-label="Close image">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+        <img src=""
+             alt="Jaisal View Gallery">
+
+        <div class="lightbox-caption"></div>
+    `;
+
+    document.body.appendChild(lightbox);
+
+
+    const lightboxImage =
+        lightbox.querySelector("img");
+
+    const lightboxCaption =
+        lightbox.querySelector(".lightbox-caption");
+
+    const lightboxClose =
+        lightbox.querySelector(".lightbox-close");
+
+
+    galleryItems.forEach(item => {
+
+        item.addEventListener("click", () => {
+
+            const image =
+                item.querySelector("img");
+
+            const title =
+                item.querySelector("h3");
+
+            if (!image) return;
+
+            lightboxImage.src = image.src;
+
+            lightboxImage.alt =
+                image.alt || "Jaisal View";
+
+            lightboxCaption.textContent =
+                title ? title.textContent : "";
+
+            lightbox.classList.add("active");
+
+            document.body.style.overflow =
+                "hidden";
+
+        });
+
+    });
+
+
+    function closeLightbox() {
+
+        lightbox.classList.remove("active");
+
+        document.body.style.overflow = "";
+
+    }
+
+
+    lightboxClose.addEventListener(
+        "click",
+        closeLightbox
     );
 
-}
+
+    lightbox.addEventListener(
+        "click",
+        event => {
+
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
+
+        }
+    );
 
 
-// ================================
-// START
-// ================================
+    document.addEventListener(
+        "keydown",
+        event => {
 
-resizeCanvas();
+            if (event.key === "Escape") {
+                closeLightbox();
+            }
 
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
+        }
+    );
 
-animateStars();
+
+    /* ================= SMOOTH SCROLL ================= */
+
+    document.querySelectorAll(
+        'a[href^="#"]'
+    ).forEach(link => {
+
+        link.addEventListener("click", event => {
+
+            const targetId =
+                link.getAttribute("href");
+
+            if (
+                !targetId ||
+                targetId === "#"
+            ) {
+                return;
+            }
+
+            const target =
+                document.querySelector(targetId);
+
+            if (!target) return;
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        });
+
+    });
+
+
+    /* ================= BACK TO TOP ================= */
+
+    const backTop =
+        document.getElementById("backTop");
+
+
+    function updateBackTop() {
+
+        if (!backTop) return;
+
+        if (window.scrollY > 650) {
+
+            backTop.classList.add("show");
+
+        } else {
+
+            backTop.classList.remove("show");
+
+        }
+
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        updateBackTop
+    );
+
+
+    if (backTop) {
+
+        backTop.addEventListener(
+            "click",
+            () => {
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+    }
+
+
+    /* ================= IMAGE FALLBACK ================= */
+
+    document.querySelectorAll("img").forEach(img => {
+
+        img.addEventListener("error", () => {
+
+            img.classList.add("image-error");
+
+            console.warn(
+                "Image not found:",
+                img.getAttribute("src")
+            );
+
+        });
+
+    });
+
+
+    /* ================= PHONE / WHATSAPP ================= */
+
+    document.querySelectorAll(
+        'a[href*="wa.me"]'
+    ).forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            console.log(
+                "Opening WhatsApp enquiry..."
+            );
+
+        });
+
+    });
+
+
+    /* ================= CURRENT YEAR ================= */
+
+    const footerText =
+        document.querySelector(".footer-bottom p");
+
+
+    if (footerText) {
+
+        footerText.innerHTML =
+            footerText.innerHTML.replace(
+                /©\s*\d{4}/,
+                `© ${new Date().getFullYear()}`
+            );
+
+    }
+
+
+    /* ================= PERFORMANCE ================= */
+
+    // Prevent accidental horizontal overflow
+    document.documentElement.style.overflowX =
+        "hidden";
+
+
+    console.log(
+        "✨ JAISAL VIEW — Luxury Desert Experience loaded."
+    );
+
+});
